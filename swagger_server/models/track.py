@@ -14,25 +14,25 @@ class Track(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: int=None, binary: bytearray=None):  # noqa: E501
+    def __init__(self, idtrack: int=None, track: str=None):  # noqa: E501
         """Track - a model defined in Swagger
 
-        :param id: The id of this Track.  # noqa: E501
-        :type id: int
-        :param binary: The binary of this Track.  # noqa: E501
-        :type binary: bytearray
+        :param idtrack: The idtrack of this Track.  # noqa: E501
+        :type idtrack: int
+        :param track: The track of this Track.  # noqa: E501
+        :type track: str
         """
         self.swagger_types = {
-            'id': int,
-            'binary': bytearray
+            'idtrack': int,
+            'track': str
         }
 
         self.attribute_map = {
-            'id': 'id',
-            'binary': 'binary'
+            'idtrack': 'idtrack',
+            'track': 'track'
         }
-        self._id = id
-        self._binary = binary
+        self._idtrack = idtrack
+        self._track = track
 
     @classmethod
     def from_dict(cls, dikt) -> 'Track':
@@ -46,47 +46,47 @@ class Track(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def id(self) -> int:
-        """Gets the id of this Track.
+    def idtrack(self) -> int:
+        """Gets the idtrack of this Track.
 
 
-        :return: The id of this Track.
+        :return: The idtrack of this Track.
         :rtype: int
         """
-        return self._id
+        return self._idtrack
 
-    @id.setter
-    def id(self, id: int):
-        """Sets the id of this Track.
+    @idtrack.setter
+    def idtrack(self, idtrack: int):
+        """Sets the idtrack of this Track.
 
 
-        :param id: The id of this Track.
-        :type id: int
+        :param idtrack: The idtrack of this Track.
+        :type idtrack: int
         """
-        if id is None:
-            raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
+        if idtrack is None:
+            raise ValueError("Invalidtrack value for `idtrack`, must not be `None`")  # noqa: E501
 
-        self._id = id
+        self._idtrack = idtrack
 
     @property
-    def binary(self) -> bytearray:
-        """Gets the binary of this Track.
+    def track(self) -> str:
+        """Gets the track of this Track.
 
 
-        :return: The binary of this Track.
-        :rtype: bytearray
+        :return: The track of this Track.
+        :rtype: str
         """
-        return self._binary
+        return self._track
 
-    @binary.setter
-    def binary(self, binary: bytearray):
-        """Sets the binary of this Track.
+    @track.setter
+    def track(self, track: str):
+        """Sets the track of this Track.
 
 
-        :param binary: The binary of this Track.
-        :type binary: bytearray
+        :param track: The track of this Track.
+        :type track: str
         """
-        if binary is None:
-            raise ValueError("Invalid value for `binary`, must not be `None`")  # noqa: E501
+        if track is None:
+            raise ValueError("Invalidtrack value for `track`, must not be `None`")  # noqa: E501
 
-        self._binary = binary
+        self._track = track

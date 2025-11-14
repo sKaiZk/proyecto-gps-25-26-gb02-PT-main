@@ -5,7 +5,7 @@ controller generated to handled auth operation described at:
 https://connexion.readthedocs.io/en/latest/security.html
 """
 
-AUTH_SERVER = '10.1.1.4:8080'
+AUTH_SERVER = 'http://10.1.1.4:8080'
 
 def is_valid_token(token):
     """
@@ -15,11 +15,15 @@ def is_valid_token(token):
     - Consulta a BD de sesiones/usuarios
     - Integración con OAuth/IAM
     """
-    resp = requests.get(f"{AUTH_SERVER}/auth", timeout=2, headers={"Accept": "application/json", "Cookie":f"oversound_auth={token}"})
-    
-    return resp.json() if resp.ok else None
+    try:
+        resp = requests.get(f"{AUTH_SERVER}/auth", timeout=2, headers={"Accept": "application/json", "Cookie":f"oversound_auth={token}"})
+        return resp.json() if resp.ok else None
+    except Exception as e:
+        print(f"Couldn't connect to SYU microservice: {e}")
+        return None
 
-def check_bandcamp_auth(api_key, required_scopes):
+
+def check_oversound_auth(api_key, required_scopes):
     """
     Verifica autenticación.
     api_key: valor del token (viene de cookie 'token')

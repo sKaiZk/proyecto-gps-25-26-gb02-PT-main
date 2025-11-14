@@ -42,16 +42,13 @@ def add_track(body):
             return Error(code="500", message="Database connection failed"), 500
 
         with conexion.cursor() as cur:
-            cur.execute("""
-                INSERT INTO tracks (binary)
-                VALUES (%s)
-                RETURNING id;
-            """, (track.binary,))  
+            query = "INSERT INTO tracks (track) VALUES (%s) RETURNING idtrack;"
+            cur.execute(query, [track.track])  
 
             new_id = cur.fetchone()[0]
             conexion.commit()
 
-        track.id = new_id
+        track.idtrack = new_id
         return track, 201
 
     except Exception as e:
@@ -79,25 +76,15 @@ def get_track(track_id):
             return Error(code="500", message="Database connection failed"), 500
 
         with conexion.cursor() as cur:
-            cur.execute("SELECT binary FROM tracks WHERE id = %s;", (track_id,))
+            query = "SELECT track FROM tracks WHERE idtrack = %s"
+            cur.execute(query, [track_id])
             row = cur.fetchone()
-
         if not row:
             return Error(code="404", message="Track not found"), 404
 
-        audio_bytes = row[0]  # PostgreSQL bytea → bytes en Python
-
-        # Retornar el binario directamente como archivo de audio
-        return send_file(
-            io.BytesIO(audio_bytes),
-            mimetype="audio/mpeg",          # o "audio/wav" según tu formato real
-            as_attachment=False,            # True si quieres que se descargue
-            download_name=f"track_{track_id}.mp3"
-        )
+        return row[0]
 
     except Exception as e:
-        if conexion:
-            conexion.rollback()
         print(f"Error al obtener track: {e}")
         return Error(code="500", message="Database error"), 500
 
@@ -125,11 +112,8 @@ def update_track(body, track_id):
             return Error(code="500", message="Database connection failed"), 500
 
         with conexion.cursor() as cur:
-            cur.execute("""
-                UPDATE tracks
-                SET binary = %s
-                WHERE id = %s;
-            """, (track.binary, track_id))
+            query = "UPDATE tracks SET track = %s WHERE idtrack = %s;"
+            cur.execute(query, [track.track, track_id])
 
             if cur.rowcount == 0:
                 conexion.rollback()
@@ -164,7 +148,8 @@ def delete_track(track_id):
             return Error(code="500", message="Database connection failed"), 500
 
         with conexion.cursor() as cur:
-            cur.execute("DELETE FROM tracks WHERE id = %s;", (track_id,))
+            query = "DELETE FROM tracks WHERE idtrack = %s;"
+            cur.execute(query, [track_id])
             if cur.rowcount == 0:
                 conexion.rollback()
                 return Error(code="404", message="Track not found"), 404
