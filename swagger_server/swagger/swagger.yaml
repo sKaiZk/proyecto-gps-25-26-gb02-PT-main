@@ -10,9 +10,26 @@ externalDocs:
 servers:
 - url: http://localhost
 tags:
+- name: root
+  description: Microservice root
 - name: track
   description: Access to tracks
 paths:
+  /:
+    get:
+      tags:
+      - root
+      summary: Returns microservice name and version
+      operationId: get_root
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Track Provider
+      x-openapi-router-controller: swagger_server.controllers.root_controller
   /track/{trackId}:
     get:
       tags:
