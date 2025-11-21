@@ -63,9 +63,7 @@ class Track(Model):
         :param idtrack: The idtrack of this Track.
         :type idtrack: int
         """
-        if idtrack is None:
-            raise ValueError("Invalidtrack value for `idtrack`, must not be `None`")  # noqa: E501
-
+        # idtrack es opcional al crear, solo se establece después de la inserción
         self._idtrack = idtrack
 
     @property

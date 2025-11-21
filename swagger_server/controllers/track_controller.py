@@ -41,15 +41,22 @@ def add_track(body):
         if not conexion:
             return Error(code="500", message="Database connection failed"), 500
 
+        # Decodificar el base64 a bytes para almacenar en BYTEA
+        try:
+            track_bytes = base64.b64decode(track.track)
+        except Exception as e:
+            return Error(code="400", message="Invalid base64 encoding"), 400
+
         with conexion.cursor() as cur:
             query = "INSERT INTO tracks (track) VALUES (%s) RETURNING idtrack;"
-            cur.execute(query, [track.track])  
+            cur.execute(query, [DB.Binary(track_bytes)])  
 
             new_id = cur.fetchone()[0]
             conexion.commit()
 
-        track.idtrack = new_id
-        return track, 201
+        # Crear un nuevo objeto Track con el ID generado para la respuesta
+        response_track = Track(idtrack=new_id, track=track.track)
+        return response_track, 201
 
     except Exception as e:
         if conexion:
@@ -63,7 +70,7 @@ def add_track(body):
 
 
 def get_track(track_id):
-    """Gets a track file directly (returns audio instead of base64 JSON)"""
+    """Gets a track file directly (returns audio in base64)"""
     # Verificar autenticación defensiva
     authorized, error_response = check_auth(required_scopes=['read:tracks'])
     if not authorized:
@@ -82,7 +89,13 @@ def get_track(track_id):
         if not row:
             return Error(code="404", message="Track not found"), 404
 
-        return row[0]
+        # Obtener los bytes del campo BYTEA
+        track_bytes = bytes(row[0])
+        # Codificar a base64 para devolver
+        track_base64 = base64.b64encode(track_bytes).decode('utf-8')
+        
+        track_obj = Track(idtrack=track_id, track=track_base64)
+        return track_obj, 200
 
     except Exception as e:
         print(f"Error al obtener track: {e}")
@@ -111,9 +124,15 @@ def update_track(body, track_id):
         if not conexion:
             return Error(code="500", message="Database connection failed"), 500
 
+        # Decodificar el base64 a bytes para almacenar en BYTEA
+        try:
+            track_bytes = base64.b64decode(track.track)
+        except Exception as e:
+            return Error(code="400", message="Invalid base64 encoding"), 400
+
         with conexion.cursor() as cur:
             query = "UPDATE tracks SET track = %s WHERE idtrack = %s;"
-            cur.execute(query, [track.track, track_id])
+            cur.execute(query, [DB.Binary(track_bytes), track_id])
 
             if cur.rowcount == 0:
                 conexion.rollback()

@@ -5,7 +5,7 @@ controller generated to handled auth operation described at:
 https://connexion.readthedocs.io/en/latest/security.html
 """
 
-AUTH_SERVER = 'http://10.1.1.4:8080'
+AUTH_SERVER = 'http://localhost:8080'
 
 def is_valid_token(token):
     """

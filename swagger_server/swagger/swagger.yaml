@@ -178,13 +178,13 @@ components:
     Track:
       required:
       - track
-      - idtrack
       type: object
       properties:
         idtrack:
           type: integer
           format: int64
           example: 1
+          readOnly: true
         track:
           type: string
           format: byte
