@@ -9,7 +9,7 @@ import sys
 import os
 
 # Configuración
-API_URL = "http://localhost:8083"
+API_URL = os.getenv('HOST_PT', 'http://localhost:8083')
 TRACK_ENDPOINT = f"{API_URL}/track/upload"
 
 def encode_audio_file(file_path):
